@@ -1,5 +1,4 @@
-export declare type Product = {
-  _id: string
+export type Product = {
   name: string
   slug: string
   image: string
