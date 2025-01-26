@@ -1,5 +1,5 @@
 import { Helmet } from "react-helmet-async"
-import { useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import { useGetProductDetailsBySlugQuery } from "../hooks/productHooks"
 import LoadingBox from "../components/LoadingBox"
 import MessageBox from "../components/MessageBox"
@@ -7,7 +7,10 @@ import { ApiError } from "../types/ApiError"
 import { Row, Col, Card, Badge, Button } from "react-bootstrap"
 import { ListGroup } from "react-bootstrap"
 import Rating from "../components/Rating"
-import { getError } from "../utils"
+import { convertProductToCartItem, getError } from "../utils"
+import { useContext } from "react"
+import { Store } from "../Stores"
+import { toast } from "react-toastify"
 
 export default function ProductPage() {
   const params = useParams()
@@ -18,10 +21,32 @@ export default function ProductPage() {
     error,
   } = useGetProductDetailsBySlugQuery(slug!)
 
+  const { state, dispatch } = useContext(Store)
+  const { cart } = state
+
+  const navigate = useNavigate()
+
+  const addToCartHandle = () => {
+    const existItem = cart.cartItems.find((x) => x._id === product!._id)
+    const quantity = existItem ? existItem.quantity + 1 : 1
+    if (product!.countInStock < quantity) {
+      toast.warn("Sorry. Product is out of stock")
+      return
+    }
+    dispatch({
+      type: "CART_ADD_ITEM",
+      payload: { ...convertProductToCartItem(product!), quantity },
+    })
+    toast.success("{Product added to the cart")
+    navigate("/cart")
+  }
+
   return isLoading ? (
     <LoadingBox />
   ) : error ? (
-    <MessageBox variant="danger">{getError(error as ApiError)}</MessageBox>
+    <MessageBox variant="danger">
+      {getError(error as unknown as ApiError)}
+    </MessageBox>
   ) : !product ? (
     <MessageBox variant="danger">Product Not Found</MessageBox>
   ) : (
@@ -79,7 +104,9 @@ export default function ProductPage() {
                 {product.countInStock > 0 && (
                   <ListGroup.Item>
                     <div className="d-grid">
-                      <Button variant="primary">Add to Cart</Button>
+                      <Button onClick={addToCartHandle} variant="primary">
+                        Add to Cart
+                      </Button>
                     </div>
                   </ListGroup.Item>
                 )}
