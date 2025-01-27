@@ -8,7 +8,7 @@
   },
   "scripts": {
     "build": "npm install cross-env && cd backend && npm install && npm run build  && cd ../frontend && npm install && npm run build",
-    "start": " set TG_ALLOW_MIXED=ALLOW && node backend/build/index.js",
+    "start": " TG_ALLOW_MIXED=ALLOW node backend/build/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
