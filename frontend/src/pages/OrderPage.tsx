@@ -1,5 +1,6 @@
-import { useContext, useEffect } from "react"
-import { Store } from "../Stores"
+import { useEffect } from "react"
+// import { useContext, useEffect } from "react"
+// import { Store } from "../Stores"
 import { Link, useParams } from "react-router-dom"
 import {
   useGetOrderDetailsQuery,
@@ -22,8 +23,8 @@ import {
 } from "@paypal/react-paypal-js"
 
 export default function OrderPage() {
-  const { state } = useContext(Store)
-  const { useInfo } = state
+  // const { state } = useContext(Store)
+  // const { useInfo } = state
 
   const params = useParams()
   const { id: orderId } = params
@@ -35,7 +36,7 @@ export default function OrderPage() {
     refetch,
   } = useGetOrderDetailsQuery(orderId!)
 
-  const { mutateAsync: payOrder, isLoading: loadingPay } = usePayOrderMutation()
+  const { mutateAsync: payOrder } = usePayOrderMutation()
 
   const testPayHandler = async () => {
     await payOrder({ orderId: orderId! })
@@ -68,12 +69,15 @@ export default function OrderPage() {
 
   const paypalbuttonTransactionProps: PayPalButtonsComponentProps = {
     style: { layout: "vertical" },
+    // @ts-expect-error 123
     createOrder(data, actions) {
       return actions.order
         .create({
+          intent: "CAPTURE",
           purchase_units: [
             {
               amount: {
+                currency_code: "USD",
                 value: order!.totalPrice.toString(),
               },
             },
@@ -83,6 +87,7 @@ export default function OrderPage() {
           return orderID
         })
     },
+    // @ts-expect-error 123
     onApprove(data, actions) {
       return actions.order!.capture().then(async (details) => {
         try {

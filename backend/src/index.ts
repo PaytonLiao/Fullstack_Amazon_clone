@@ -1,7 +1,8 @@
-import express from "express"
+import express, { Response, Request } from "express"
 import cors from "cors"
 import dotenv from "dotenv"
 import mongoose from "mongoose"
+import path from "path"
 import { productRouter } from "./routers/productRouters"
 import { seedRouter } from "./routers/seedRouter"
 import { userRouter } from "./routers/userRouter"
@@ -9,9 +10,12 @@ import { orderRouter } from "./routers/orderRouter"
 import { keyRouter } from "./routers/keyRouter"
 
 dotenv.config()
+dotenv.config({ path: path.resolve(__dirname, "../.env") })
 
 const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/amazon"
 
+console.log("hello")
+console.log(MONGODB_URI)
 mongoose.set("strictQuery", true)
 mongoose
   .connect(MONGODB_URI)
@@ -39,7 +43,14 @@ app.use("/api/orders", orderRouter)
 app.use("/api/seed", seedRouter)
 app.use("/api/keys", keyRouter)
 
-const PORT = 4000
+app.use(express.static(path.join(__dirname, "../../frontend/dist")))
+app.get("*", (req: Request, res: Response) =>
+  res.sendFile(path.join(__dirname, "../../frontend/dist/index.html"))
+)
+
+const PORT: number = parseInt((process.env.PORT || "4000") as string, 10)
+
+// const PORT = 4000
 app.listen(PORT, () => {
   console.log(`server started at http://localhost:${PORT}`)
 })

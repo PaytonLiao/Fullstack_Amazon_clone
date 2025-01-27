@@ -1,6 +1,5 @@
 import { useContext, useEffect } from "react"
 import {
-  Badge,
   Button,
   Container,
   Form,
@@ -8,7 +7,6 @@ import {
   InputGroup,
   Nav,
   Navbar,
-  NavbarCollapse,
   NavDropdown,
 } from "react-bootstrap"
 import { ToastContainer } from "react-toastify"
@@ -42,7 +40,7 @@ function App() {
 
   return (
     // vh-100
-    <div className="d-flex flex-column vh-100">
+    <div className="d-flex flex-column min-vh-100">
       <ToastContainer position="bottom-center" limit={1} />
       <header>
         <Navbar
@@ -160,7 +158,7 @@ function App() {
         </Container>
       </main>
       <footer>
-        <div className="text-center">All right reserved</div>
+        <div className="text-center m-3">All right reserved</div>
       </footer>
     </div>
   )

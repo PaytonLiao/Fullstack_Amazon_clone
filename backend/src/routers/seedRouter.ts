@@ -10,7 +10,7 @@ seedRouter.get(
   expressAsyncHandler(async (req, res) => {
     await ProductModel.deleteMany({})
     const createdProducts = await ProductModel.insertMany(sampleProducts)
-
+    console.log("seeding")
     await UserModel.deleteMany({})
     const createdUsers = await UserModel.insertMany(sampleUsers)
 
