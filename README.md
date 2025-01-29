@@ -22,4 +22,4 @@ A full-stack e-commerce application built using React, Express, and MongoDB. Thi
 - **Payment**: PayPal API
 - **Deployment**: Cloud services via Render.com
 
-- Feel free to try at: https://paytonsamazon.onrender.com/
+- Feel free to try at: https://paytonsamazon.onrender.com/ (the website might take a minute to load bc i am using the free version :))
